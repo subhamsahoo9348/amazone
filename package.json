@@ -18,5 +18,26 @@
   ],
   "sapux": [
     "app/customer"
-  ]
+  ],
+  "cds": {
+    "requires": {
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "a": {
+            "password": "",
+            "roles": [
+              "admin"
+            ]
+          },
+          "c": {
+            "password": "",
+            "roles": [
+              "customer"
+            ]
+          }
+        }
+      }
+    }
+  }
 }

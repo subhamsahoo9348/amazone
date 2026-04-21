@@ -17,10 +17,43 @@ service adminService {
 }
 
 //require   Custmers
-service customerService {
+service customerService @(requires: 'authenticated-user') {
+    @restrict: [
+        {
+            grant: 'READ',
+            to   : 'customer'
+        },
+        {
+            grant: 'WRITE',
+            to   : 'customer'
+        }
+    ]
     entity getOrder      as projection on DA.Order;
+
     entity getCustomer   as projection on DA.Customer;
+
+    @restrict: [
+        {
+            grant: 'READ',
+            to   : 'customer'
+        },
+        {
+            grant: 'WRITE',
+            to   : 'customer'
+        }
+    ]
     entity getProduct    as projection on DA.Product;
+
+    @restrict: [
+        {
+            grant: 'READ',
+            to   : 'customer'
+        },
+        {
+            grant: 'WRITE',
+            to   : 'customer'
+        }
+    ]
     entity getOrderItems as projection on DA.OrderItems
 }
 
