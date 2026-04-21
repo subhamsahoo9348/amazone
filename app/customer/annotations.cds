@@ -63,38 +63,12 @@ annotate service.getOrder with @(
     ],
 );
 
-annotate service.getOrder with {
-    customer @Common.ValueList : {
-        $Type : 'Common.ValueListType',
-        CollectionPath : 'getCustomer',
-        Parameters : [
-            {
-                $Type : 'Common.ValueListParameterInOut',
-                LocalDataProperty : customer_ID,
-                ValueListProperty : 'ID',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'name',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'contactInfo',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'address',
-            },
-        ],
-    }
-};
-
 annotate service.getOrderItems with @(
     UI.LineItem #Items : [
         {
             $Type : 'UI.DataField',
-            Value : product.name,
-            Label : 'name',
+            Value : product_ID,
+            Label : 'product_ID',
         },
         {
             $Type : 'UI.DataField',
@@ -104,23 +78,22 @@ annotate service.getOrderItems with @(
     ]
 );
 
-annotate service.getProduct with {
-    name @(
+annotate service.getOrderItems with {
+    product @(
+        Common.ExternalID : product.name,
         Common.ValueList : {
             $Type : 'Common.ValueListType',
             CollectionPath : 'getProduct',
             Parameters : [
                 {
                     $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : name,
-                    ValueListProperty : 'name',
+                    LocalDataProperty : product_ID,
+                    ValueListProperty : 'ID',
                 },
             ],
             Label : 'Select Product',
         },
         Common.ValueListWithFixedValues : false,
-        Common.FieldControl : #Mandatory,
-        Common.Text : category,
-        )
+    )
 };
 
