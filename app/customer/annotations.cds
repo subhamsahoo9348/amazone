@@ -94,6 +94,11 @@ annotate service.getOrderItems with {
             Label : 'Select Product',
         },
         Common.ValueListWithFixedValues : false,
+        Common.FieldControl : #Mandatory,
     )
+};
+
+annotate service.getOrderItems with {
+    quantity @Common.FieldControl : #Mandatory
 };
 

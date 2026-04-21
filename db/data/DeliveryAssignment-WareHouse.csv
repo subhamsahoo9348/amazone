@@ -1,11 +1,11 @@
-ID,name,location,capacity
-14629818-1b83-496c-bfa2-c9a4d53c6e1b,Hyderabad Central Warehouse,Hyderabad,5000
-14629819-3539-4fd0-aa1b-9a2913cf99ac,Bangalore Storage Hub,Bangalore,7000
-14629820-ecf6-4b17-b23b-a6f9914ef003,Chennai Distribution Center,Chennai,6000
-14629821-7827-4cc2-be8e-1e736884029d,Mumbai Logistics Park,Mumbai,8000
-14629822-d967-440c-bb39-61bd0077d15f,Delhi Supply Depot,Delhi,7500
-14629823-941a-4d51-925e-da9c1572f1d6,Pune Regional Warehouse,Pune,5500
-14629824-ce74-4edd-bb0f-42f26aac3830,Kolkata Storage Facility,Kolkata,6500
-14629825-f8b4-419b-a23e-72d068437c69,Ahmedabad Distribution Hub,Ahmedabad,5000
-14629826-3d93-45da-b87c-74c2559d9817,Coimbatore Logistics Center,Coimbatore,4500
-14629827-34f0-492d-9915-4b7bcd93bea4,Vijayawada Warehouse,Vijayawada,4000
+ID,name,address_street,address_city,address_state,address_zipCode,address_latitude,address_longitude,capacity
+14629818-1b83-496c-bfa2-c9a4d53c6e1b,Hyderabad Central Warehouse,MG Road,Hyderabad,Telangana,500001,17.3850,78.4867,5000
+14629819-3539-4fd0-aa1b-9a2913cf99ac,Bangalore Storage Hub,Brigade Road,Bangalore,Karnataka,560001,12.9716,77.5946,7000
+14629820-ecf6-4b17-b23b-a6f9914ef003,Chennai Distribution Center,Anna Salai,Chennai,Tamil Nadu,600002,13.0827,80.2707,6000
+14629821-7827-4cc2-be8e-1e736884029d,Mumbai Logistics Park,Linking Road,Mumbai,Maharashtra,400050,19.0760,72.8777,8000
+14629822-d967-440c-bb39-61bd0077d15f,Delhi Supply Depot,Connaught Place,Delhi,Delhi,110001,28.6139,77.2090,7500
+14629823-941a-4d51-925e-da9c1572f1d6,Pune Regional Warehouse,FC Road,Pune,Maharashtra,411004,18.5204,73.8567,5500
+14629824-ce74-4edd-bb0f-42f26aac3830,Kolkata Storage Facility,Park Street,Kolkata,West Bengal,700016,22.5726,88.3639,6500
+14629825-f8b4-419b-a23e-72d068437c69,Ahmedabad Distribution Hub,CG Road,Ahmedabad,Gujarat,380009,23.0225,72.5714,5000
+14629826-3d93-45da-b87c-74c2559d9817,Coimbatore Logistics Center,Avinashi Road,Coimbatore,Tamil Nadu,641018,11.0168,76.9558,4500
+14629827-34f0-492d-9915-4b7bcd93bea4,Vijayawada Warehouse,Benz Circle,Vijayawada,Andhra Pradesh,520010,16.5062,80.6480,4000

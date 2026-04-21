@@ -8,7 +8,14 @@ namespace DeliveryAssignment;
 
 entity WareHouse : cuid {
     name     : String(100);
-    address  : Association to Address;
+    address  : {
+        street    : String(100);
+        city      : String(100);
+        state     : String(100);
+        zipCode   : String(20);
+        latitude  : Decimal(9, 6);
+        longitude : Decimal(9, 6);
+    };
     capacity : Integer;
     vehicles : Association to many Vehicle
                    on vehicles.assignWareHouse = $self;
@@ -50,7 +57,14 @@ entity Driver : cuid {
 entity Customer : cuid {
     name        : String(100);
     contactInfo : String(100);
-    address     : Association to Address;
+    address     : {
+        street    : String(100);
+        city      : String(100);
+        state     : String(100);
+        zipCode   : String(20);
+        latitude  : Decimal(9, 6);
+        longitude : Decimal(9, 6);
+    };
     orders      : Association to many Order
                       on orders.customer = $self;
 }
@@ -91,13 +105,4 @@ entity OrderItems : cuid {
     order    : Association to Order;
     product  : Association to one Product;
     quantity : Integer;
-}
-
-entity Address : cuid {
-    street    : String(100);
-    city      : String(100);
-    state     : String(100);
-    zipCode   : String(20);
-    latitude  : Decimal(9, 6);
-    longitude : Decimal(9, 6);
 }
