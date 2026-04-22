@@ -71,7 +71,15 @@ entity Customer : cuid {
 
 entity Shipment : cuid, managed {
     sourceWarehouse    : Association to WareHouse;
-    destinationAddress : String(100);
+    product            : Association to Product;
+    destinationAddress : {
+        street    : String(100);
+        city      : String(100);
+        state     : String(100);
+        zipCode   : String(20);
+        latitude  : Decimal(9, 6);
+        longitude : Decimal(9, 6);
+    };
     weight             : Integer;
     priority           : String enum {
         High = 'H';
@@ -82,7 +90,7 @@ entity Shipment : cuid, managed {
         Pending = 'P';
         Assigned = 'A';
         Delivered = 'D';
-    };
+    } default 'P';
 }
 
 entity DeliveryAssignment : cuid {
