@@ -1,4 +1,4 @@
-const cds = require('@sap/cds')
+const cds = require('@sap/cds');
 
 module.exports = class adminService extends cds.ApplicationService {
   init() {
@@ -10,8 +10,46 @@ module.exports = class adminService extends cds.ApplicationService {
       setImmediate(() => createShipment(res, req.user));
     });
 
-    async function createShipment() {
-      //To-Do
+    async function createShipment(results, user) {
+
+      const customer = await SELECT.one(getCustomer).where({ name: user.id });
+
+      const wareHouseMap = new Map();
+
+
+
+      await Promise.all(results.items.map(async item => {
+        const availbleWareHosue = await SELECT.from(getWarehouseInventory)
+          .where({ product_ID: item.product_ID }).and('quantityAvailable >', item.quantity);
+        
+        // availbleWareHosue.sort((a, b) => {
+
+        // })
+
+        // debugger  find the nearest warshouse
+
+
+        availbleWareHosue.forEach(w => {
+          const id = w.warehouse_ID;
+          let warehouseProd = wareHouseMap.get(id);
+          if (!warehouseProd) {
+            warehouseProd = new Set();
+            wareHouseMap.set(id, warehouseProd);
+          }
+
+          warehouseProd.add(item.product_ID);
+
+
+        });
+      }))
+
+      debugger
+
+
+    }
+
+    function nearDistance(a, b) {
+      debugger
     }
 
     function getDistanceInKm(userLocation, targetLocation) {
