@@ -83,9 +83,10 @@ entity Shipment : cuid, managed {
     weight             : Integer;
     priority           : String enum {
         High = 'H';
+
         Medium = 'M';
         Low = 'L';
-    };
+    } default 'L';
     status             : String enum {
         Pending = 'P';
         Assigned = 'A';
@@ -95,7 +96,7 @@ entity Shipment : cuid, managed {
 
 entity DeliveryAssignment : cuid {
     shipment       : Association to Shipment;
-    drive          : Association to Driver;
+    driver         : Association to Driver;
     vehicle        : Association to Vehicle;
     assignedDate   : Date;
     deliveryStatus : String(100);

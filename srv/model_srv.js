@@ -1,9 +1,10 @@
 const cds = require('@sap/cds');
+const { SELECT, INSERT } = require('@sap/cds/lib/ql/cds-ql');
 
 module.exports = class adminService extends cds.ApplicationService {
   init() {
 
-    const { getOrder: adminGetOrder, getCustomer, getWarehouseInventory, getWareHouse } = cds.entities('adminService')
+    const { getOrder: adminGetOrder, getCustomer, getWarehouseInventory, getWareHouse, getShipment, getProduct } = cds.entities('adminService')
     const { getOrder: custGetOrder } = cds.entities('customerService')
 
     this.after(['CREATE', 'UPDATE'], custGetOrder, async (res, req) => {
@@ -14,43 +15,53 @@ module.exports = class adminService extends cds.ApplicationService {
 
       const customer = await SELECT.one(getCustomer).where({ name: user.id });
 
-      const wareHouseMap = new Map();
-
-
-
-      await Promise.all(results.items.map(async item => {
+      const productWareHosue = await Promise.all(results.items.map(async item => {
         const availbleWareHosue = await SELECT.from(getWarehouseInventory)
           .where({ product_ID: item.product_ID }).and('quantityAvailable >', item.quantity);
-        
-        // availbleWareHosue.sort((a, b) => {
-
-        // })
-
-        // debugger  find the nearest warshouse
 
 
-        availbleWareHosue.forEach(w => {
-          const id = w.warehouse_ID;
-          let warehouseProd = wareHouseMap.get(id);
-          if (!warehouseProd) {
-            warehouseProd = new Set();
-            wareHouseMap.set(id, warehouseProd);
-          }
 
-          warehouseProd.add(item.product_ID);
+        const WareHosueDistances = await Promise.all(availbleWareHosue.map(async wareHouse => {
+
+          const wareHosue = await SELECT.one(getWareHouse).where({ ID: wareHouse.warehouse_ID });
+
+          const userLocation = { latitude: customer.address_latitude, longitude: customer.address_latitude };
+          const wareHouseLocation = { latitude: wareHosue.address_latitude, longitude: wareHosue.address_latitude };
+
+          const distnace = getDistanceInKm(userLocation, wareHouseLocation);
+
+          return { warehouse_ID: wareHouse.warehouse_ID, distnace }
 
 
-        });
+        }));
+        const nearWareHosue = WareHosueDistances.sort((a, b) => a.distnace - b.distnace)[0].warehouse_ID;
+
+        const product = await SELECT.one(getProduct).where({ ID: item.product_ID })
+
+        return { product: product, nearWareHosue: nearWareHosue }
+
+
       }))
 
-      debugger
+      
+
+      // productWareHosue.forEach(async ({ product, nearWareHosue }) => {
+      //   INSERT.into(getShipment).entries({
+      //     sourceWarehouse_ID: nearWareHosue,
+      //     product_ID: product.ID,
+      //     weight: product.weight,
+      //     destinationAddress_street: customer.address_stree,
+      //     destinationAddress_city: customer.address_city,
+      //     destinationAddress_state: customer.address_state,
+      //     destinationAddress_zipCode: customer.address_zipCode,
+      //     destinationAddress_latitude: customer.address_latitude,
+      //     destinationAddress_longitude: customer.address_longitude
+      //   });
+      // })
 
 
     }
 
-    function nearDistance(a, b) {
-      debugger
-    }
 
     function getDistanceInKm(userLocation, targetLocation) {
       const toRad = (value) => (value * Math.PI) / 180;
