@@ -42,6 +42,8 @@ entity Vehicle : cuid {
     };
     maxLoadCapacity : Integer;
     assignWareHouse : Association to WareHouse;
+    driver          : Association to Driver
+                          on driver.assignedVehicle = $self;
 }
 
 entity Driver : cuid {
