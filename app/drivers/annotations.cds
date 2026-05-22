@@ -75,6 +75,32 @@ annotate service.getDeliveryAssignment with @(
         ]
     },
 
+    UI.FieldGroup #DeliveryLocation : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Label : 'Street',
+                Value : shipment.destinationAddress_street
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'City',
+                Value : shipment.destinationAddress_city
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'State',
+                Value : shipment.destinationAddress_state
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'ZIP Code',
+                Value : shipment.destinationAddress_zipCode
+            }
+        ]
+    },
+
     // ── Facets (Object Page sections) ───────────────────────────
     UI.Facets : [
         {
@@ -82,6 +108,12 @@ annotate service.getDeliveryAssignment with @(
             ID     : 'AssignmentDetailsFacet',
             Label  : 'Assignment Details',
             Target : '@UI.FieldGroup#AssignmentDetails'
+        },
+        {
+            $Type  : 'UI.ReferenceFacet',
+            ID     : 'DeliveryLocationFacet',
+            Label  : 'Delivery Location',
+            Target : '@UI.FieldGroup#DeliveryLocation'
         }
     ],
 
