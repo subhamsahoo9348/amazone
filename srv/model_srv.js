@@ -1,5 +1,5 @@
 const cds = require("@sap/cds");
-const { SELECT, INSERT } = require("@sap/cds/lib/ql/cds-ql");
+const { SELECT, INSERT, UPDATE } = require("@sap/cds/lib/ql/cds-ql");
 
 module.exports = class adminService extends cds.ApplicationService {
   init() {
@@ -11,8 +11,16 @@ module.exports = class adminService extends cds.ApplicationService {
       getShipment,
       getProduct,
       getVehicle,
+      getDriver,
+      getDeliveryAssignment,
     } = cds.entities("adminService");
     const { getOrder: custGetOrder } = cds.entities("customerService");
+
+    this.before("CREATE", custGetOrder, (req) => {
+      if (!req.data.orderDate) {
+        req.data.orderDate = new Date().toISOString().slice(0, 10);
+      }
+    });
 
     this.after(["CREATE", "UPDATE"], custGetOrder, async (res, req) => {
       setImmediate(() => createShipment(res, req.user));
@@ -22,50 +30,52 @@ module.exports = class adminService extends cds.ApplicationService {
       try {
         const customer = await SELECT.one(getCustomer).where({ name: user.id });
 
-        const productWareHosue = await Promise.all(
+        const productWarehouses = await Promise.all(
           results.items.map(async (item) => {
-            const availbleWareHosue = await SELECT.from(getWarehouseInventory)
+            const availableWarehouses = await SELECT.from(getWarehouseInventory)
               .where({ product_ID: item.product_ID })
               .and("quantityAvailable >", item.quantity);
 
-            const WareHosueDistances = await Promise.all(
-              availbleWareHosue.map(async (wareHouse) => {
-                const wareHosue = await SELECT.one(getWareHouse).where({
+            const warehouseDistances = await Promise.all(
+              availableWarehouses.map(async (wareHouse) => {
+                const warehouse = await SELECT.one(getWareHouse).where({
                   ID: wareHouse.warehouse_ID,
                 });
 
                 const userLocation = {
                   latitude: customer.address_latitude,
-                  longitude: customer.address_latitude,
+                  longitude: customer.address_longitude,
                 };
                 const wareHouseLocation = {
-                  latitude: wareHosue.address_latitude,
-                  longitude: wareHosue.address_latitude,
+                  latitude: warehouse.address_latitude,
+                  longitude: warehouse.address_longitude,
                 };
 
-                const distnace = getDistanceInKm(
+                const distance = getDistanceInKm(
                   userLocation,
                   wareHouseLocation,
                 );
 
-                return { warehouse_ID: wareHouse.warehouse_ID, distnace };
+                return { warehouse_ID: wareHouse.warehouse_ID, distance };
               }),
             );
-            const nearWareHosue = WareHosueDistances.sort(
-              (a, b) => a.distnace - b.distnace,
+            const nearestWarehouseId = warehouseDistances.sort(
+              (a, b) => a.distance - b.distance,
             )[0]?.warehouse_ID;
 
             const product = await SELECT.one(getProduct).where({
               ID: item.product_ID,
             });
 
-            return { product: product, nearWareHosue: nearWareHosue };
+            return { product: product, nearestWarehouseId: nearestWarehouseId };
           }),
         );
 
-        productWareHosue.forEach(async ({ product, nearWareHosue }) => {
+        productWarehouses.forEach(async ({ product, nearestWarehouseId }) => {
+          const shipmentId = cds.utils.uuid();
           await INSERT.into(getShipment).entries({
-            sourceWarehouse_ID: nearWareHosue,
+            ID: shipmentId,
+            sourceWarehouse_ID: nearestWarehouseId,
             product_ID: product.ID,
             weight: product.weight,
             destinationAddress_street: customer.address_street,
@@ -75,14 +85,7 @@ module.exports = class adminService extends cds.ApplicationService {
             destinationAddress_latitude: customer.address_latitude,
             destinationAddress_longitude: customer.address_longitude,
           });
-          await DeliveryAssignment(nearWareHosue, product, {
-            destinationAddress_street: customer.address_street,
-            destinationAddress_city: customer.address_city,
-            destinationAddress_state: customer.address_state,
-            destinationAddress_zipCode: customer.address_zipCode,
-            destinationAddress_latitude: customer.address_latitude,
-            destinationAddress_longitude: customer.address_longitude,
-          });
+          await assignDelivery(shipmentId, nearestWarehouseId, product);
         });
       } catch (error) {
         debugger;
@@ -110,12 +113,41 @@ module.exports = class adminService extends cds.ApplicationService {
       return R * c;
     }
 
-    async function DeliveryAssignment(wareHosue, product, targetLocation) {
-      const vehile = await SELECT.from(getVehicle)
-        .where({ assignWareHouse_ID: wareHosue })
+    async function assignDelivery(shipmentId, warehouseId, product) {
+      const vehicle = await SELECT.one(getVehicle)
+        .where({ assignWareHouse_ID: warehouseId })
         .and("maxLoadCapacity >", product.weight)
         .and({ "driver.status": "A" });
-      debugger;
+
+      if (!vehicle) {
+        console.warn(
+          `assignDelivery: no eligible vehicle at warehouse ${warehouseId} for weight ${product.weight}kg — shipment ${shipmentId} stays Pending`,
+        );
+        return;
+      }
+
+      const driver = await SELECT.one(getDriver).where({
+        assignedVehicle_ID: vehicle.ID,
+        status: "A",
+      });
+
+      if (!driver) {
+        console.warn(
+          `assignDelivery: vehicle ${vehicle.ID} has no available driver — shipment ${shipmentId} stays Pending`,
+        );
+        return;
+      }
+
+      await INSERT.into(getDeliveryAssignment).entries({
+        shipment_ID: shipmentId,
+        driver_ID: driver.ID,
+        vehicle_ID: vehicle.ID,
+        assignedDate: new Date().toISOString().slice(0, 10),
+        deliveryStatus: "Assigned",
+      });
+
+      await UPDATE(getDriver).set({ status: "B" }).where({ ID: driver.ID });
+      await UPDATE(getShipment).set({ status: "A" }).where({ ID: shipmentId });
     }
 
     return super.init();

@@ -1,104 +1,178 @@
 using customerService as service from '../../srv/model_srv';
+
 annotate service.getOrder with @(
-    UI.FieldGroup #GeneratedGroup : {
+
+    // ── Object Page Header ──────────────────────────────────────
+    UI.HeaderInfo : {
+        TypeName       : 'Order',
+        TypeNamePlural : 'Orders',
+        Title          : {
+            $Type : 'UI.DataField',
+            Value : orderDate,
+            Label : 'Order Date'
+        },
+        Description    : {
+            $Type : 'UI.DataField',
+            Value : createdBy,
+            Label : 'Created By'
+        }
+    },
+
+    UI.DataPoint #OrderDateKPI : {
+        $Type : 'UI.DataPointType',
+        Value : orderDate,
+        Title : 'Order Date'
+    },
+
+    UI.HeaderFacets : [
+        {
+            $Type  : 'UI.ReferenceFacet',
+            ID     : 'OrderDateHeaderFacet',
+            Label  : 'Order Date',
+            Target : '@UI.DataPoint#OrderDateKPI'
+        }
+    ],
+
+    UI.Identification : [
+        {
+            $Type : 'UI.DataField',
+            Label : 'Order Date',
+            Value : orderDate
+        },
+        {
+            $Type : 'UI.DataField',
+            Label : 'Created By',
+            Value : createdBy
+        }
+    ],
+
+    // ── Field Groups ────────────────────────────────────────────
+    UI.FieldGroup #AdminData : {
         $Type : 'UI.FieldGroupType',
         Data : [
             {
                 $Type : 'UI.DataField',
-                Label : 'orderDate',
-                Value : orderDate,
+                Label : 'Created By',
+                Value : createdBy
             },
             {
                 $Type : 'UI.DataField',
-                Value : modifiedBy,
+                Label : 'Created At',
+                Value : createdAt
             },
             {
                 $Type : 'UI.DataField',
-                Value : modifiedAt,
+                Label : 'Last Modified By',
+                Value : modifiedBy
             },
             {
                 $Type : 'UI.DataField',
-                Value : createdBy,
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : createdAt,
-            },
-        ],
+                Label : 'Last Modified At',
+                Value : modifiedAt
+            }
+        ]
     },
+
+    // ── Facets (Object Page sections) ───────────────────────────
     UI.Facets : [
         {
-            $Type : 'UI.ReferenceFacet',
-            ID : 'GeneratedFacet1',
-            Label : 'General Information',
-            Target : '@UI.FieldGroup#GeneratedGroup',
+            $Type  : 'UI.ReferenceFacet',
+            ID     : 'Items',
+            Label  : 'Order Items',
+            Target : 'items/@UI.LineItem#Items'
         },
         {
-            $Type : 'UI.ReferenceFacet',
-            Label : 'Items',
-            ID : 'Items',
-            Target : 'items/@UI.LineItem#Items',
-        },
+            $Type  : 'UI.ReferenceFacet',
+            ID     : 'AdminDataFacet',
+            Label  : 'Administrative Data',
+            Target : '@UI.FieldGroup#AdminData'
+        }
     ],
+
+    // ── List Report ─────────────────────────────────────────────
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Label : 'orderDate',
-            Value : orderDate,
+            Label : 'Order ID',
+            Value : ID
         },
         {
             $Type : 'UI.DataField',
-            Value : ID,
-            Label : 'ID',
+            Label : 'Order Date',
+            Value : orderDate
         },
         {
             $Type : 'UI.DataField',
-            Value : createdBy,
+            Label : 'Created By',
+            Value : createdBy
         },
         {
-            $Type : 'UI.DataFieldForAction',
+            $Type  : 'UI.DataFieldForAction',
             Action : 'customerService.EntityContainer/createOrder',
-            Label : 'Create Order',
-        },
+            Label  : 'Create Order'
+        }
     ],
+
+    UI.SelectionFields : [
+        orderDate,
+        createdBy
+    ],
+
+    UI.PresentationVariant : {
+        $Type          : 'UI.PresentationVariantType',
+        SortOrder      : [
+            {
+                $Type      : 'Common.SortOrderType',
+                Property   : orderDate,
+                Descending : true
+            }
+        ],
+        Visualizations : ['@UI.LineItem']
+    }
 );
 
+
+// ── Order Items ─────────────────────────────────────────────────
 annotate service.getOrderItems with @(
     UI.LineItem #Items : [
         {
             $Type : 'UI.DataField',
-            Value : product_ID,
-            Label : 'product_ID',
+            Label : 'Product',
+            Value : product_ID
         },
         {
             $Type : 'UI.DataField',
-            Value : quantity,
-            Label : 'quantity',
-        },
+            Label : 'Quantity',
+            Value : quantity
+        }
     ]
 );
 
 annotate service.getOrderItems with {
     product @(
-        Common.ExternalID : product.name,
-        Common.ValueList : {
-            $Type : 'Common.ValueListType',
+        Common.Text                     : product.name,
+        Common.TextArrangement          : #TextOnly,
+        Common.ExternalID               : product.name,
+        Common.ValueList                : {
+            $Type          : 'Common.ValueListType',
             CollectionPath : 'getProduct',
-            Parameters : [
+            Parameters     : [
                 {
-                    $Type : 'Common.ValueListParameterInOut',
+                    $Type             : 'Common.ValueListParameterInOut',
                     LocalDataProperty : product_ID,
-                    ValueListProperty : 'ID',
-                },
+                    ValueListProperty : 'ID'
+                }
             ],
-            Label : 'Select Product',
+            Label          : 'Select Product'
         },
         Common.ValueListWithFixedValues : false,
-        Common.FieldControl : #Mandatory,
+        Common.FieldControl             : #Mandatory
     )
 };
 
 annotate service.getOrderItems with {
-    quantity @Common.FieldControl : #Mandatory
+    quantity @(
+        Common.FieldControl : #Mandatory,
+        assert.range        : [1, 9999]
+    )
 };
-

@@ -30,7 +30,7 @@
               "admin"
             ]
           },
-          "c": {
+          "cust": {
             "password": "",
             "roles": [
               "customer"

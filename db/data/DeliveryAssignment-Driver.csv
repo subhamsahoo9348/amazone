@@ -1,11 +1,26 @@
 ID,name,licenseType,assignedVehicle_ID,status
 d3493e9b-4654-4342-8356-987865231234,Ravi Kumar,Heavy Motor Vehicle,74a0e98c-876a-493e-8692-72c694a10123,A
+e1f2a3b4-1001-4001-8001-aaaaaaaaaaaa,Lakshmi Devi,Light Motor Vehicle,a2c4e6f8-1122-4334-8556-778899aabbcc,A
+f1a2b3c4-1002-4002-8002-bbbbbbbbbbbb,Sai Teja,Motorcycle With Gear,b3d5f7a9-2233-4445-9667-889900bbccdd,B
 f231298c-9012-4112-8812-334455667788,Arjun Reddy,Light Motor Vehicle,2e293809-5634-406b-bc54-52a095687789,A
+a2b3c4d5-1003-4003-8003-cccccccccccc,Mahesh Gowda,Heavy Motor Vehicle,c4e6a8b0-3344-4556-8778-99aabbccddee,B
+b3c4d5e6-1004-4004-8004-dddddddddddd,Pooja Shetty,Motorcycle With Gear,d5f7b9c1-4455-4667-9889-aabbccddeeff,A
 b123987a-1122-3344-5566-77889900aabb,Suresh Yadav,Heavy Motor Vehicle,f4897361-9001-4475-9854-8c010373887c,A
-c9812e44-5566-7788-9900-112233445566,Imran Khan,Transport Vehicle,c077b960-4491-4993-9c8a-360699036644,A
+c4d5e6f7-1005-4005-8005-eeeeeeeeeeee,Sundaram Pillai,Light Motor Vehicle,e6a8c0d2-5566-4778-8990-bbccddeeff00,A
+d5e6f7a8-1006-4006-8006-ffffffffffff,Lakshmanan Iyer,Motorcycle With Gear,f7b9d1e3-6677-4889-9aa1-ccddeeff0011,A
+c9812e44-5566-7788-9900-112233445566,Imran Khan,Heavy Motor Vehicle,c077b960-4491-4993-9c8a-360699036644,A
+e6f7a8b9-1007-4007-8007-000011112222,Sneha Joshi,Light Motor Vehicle,18ca2e34-7788-499a-8bb2-ddeeff001122,B
+f7a8b9c0-1008-4008-8008-111122223333,Rohit Pawar,Motorcycle With Gear,29db3f45-8899-4aab-9cc3-eeff00112233,A
 a1122334-4455-6677-8899-00aabbccddee,Vikram Singh,Heavy Motor Vehicle,b6a77d12-1123-45a1-9002-334455667788,A
-e5566778-8899-00aa-bbcc-ddeeff001122,Karthik Iyer,Light Motor Vehicle,8812e944-5541-4c12-bd12-998811223344,A
-77889900-aabb-ccdd-eeff-001122334455,Ramesh Gupta,Transport Vehicle,11c8a773-2231-4112-a123-556677889900,A
-11223344-5566-7788-9900-aabbccddeeff,Anil Sharma,Heavy Motor Vehicle,44d12e9a-9981-4f12-8812-776655443322,A
-aabbccdd-eeff-0011-2233-445566778899,Deepak Verma,Light Motor Vehicle,d221e88c-bb01-4123-99a1-112233445566,A
-ffeeddcc-bbaa-9988-7766-554433221100,Faizan Ali,Transport Vehicle,99b12e88-cc12-4521-8812-443322110099,A
+a8b9c0d1-1009-4009-8009-222233334444,Manju Bhatia,Light Motor Vehicle,3aec4056-99aa-4bbc-8dd4-ff0011223344,A
+b9c0d1e2-100a-400a-800a-333344445555,Rakesh Tyagi,Motorcycle With Gear,4bfd5167-aabb-4ccd-9ee5-001122334455,B
+e5566778-8899-00aa-bbcc-ddeeff001122,Karthik Iyer,Heavy Motor Vehicle,8812e944-5541-4c12-bd12-998811223344,A
+c0d1e2f3-100b-400b-800b-444455556666,Amol Deshmukh,Light Motor Vehicle,5c0e6278-bbcc-4dde-8ff6-112233445566,A
+77889900-aabb-ccdd-eeff-001122334455,Ramesh Gupta,Light Motor Vehicle,11c8a773-2231-4112-a123-556677889900,A
+d1e2f3a4-100c-400c-800c-555566667777,Sanjay Banerjee,Heavy Motor Vehicle,6d1f7389-ccdd-4eef-9aa7-223344556677,B
+11223344-5566-7788-9900-aabbccddeeff,Anil Sharma,Light Motor Vehicle,44d12e9a-9981-4f12-8812-776655443322,A
+e2f3a4b5-100d-400d-800d-666677778888,Hetal Patel,Heavy Motor Vehicle,7e208490-ddee-4ff0-8bb8-334455667788,A
+aabbccdd-eeff-0011-2233-445566778899,Deepak Verma,Heavy Motor Vehicle,d221e88c-bb01-4123-99a1-112233445566,A
+f3a4b5c6-100e-400e-800e-777788889999,Murali Kannan,Light Motor Vehicle,8f31959a-eeff-4001-9cc9-445566778899,B
+ffeeddcc-bbaa-9988-7766-554433221100,Faizan Ali,Heavy Motor Vehicle,99b12e88-cc12-4521-8812-443322110099,A
+a4b5c6d7-100f-400f-800f-888899990000,Naveen Babu,Light Motor Vehicle,9042a6ab-ff00-4112-8dda-556677889900,B
