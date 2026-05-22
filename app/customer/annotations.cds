@@ -1,6 +1,21 @@
 using customerService as service from '../../srv/model_srv';
 
 annotate service.getOrder with @(
+    Capabilities.FilterRestrictions : {
+        FilterExpressionRestrictions : [
+            {
+                Property           : orderDate,
+                AllowedExpressions : 'SingleRange'
+            }
+        ]
+    }
+);
+
+annotate service.getOrder with {
+    status @Common.ValueListWithFixedValues : true
+};
+
+annotate service.getOrder with @(
 
     // ── Object Page Header ──────────────────────────────────────
     UI.HeaderInfo : {
@@ -93,11 +108,6 @@ annotate service.getOrder with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Label : 'Order ID',
-            Value : ID
-        },
-        {
-            $Type : 'UI.DataField',
             Label : 'Order Date',
             Value : orderDate
         },
@@ -107,15 +117,17 @@ annotate service.getOrder with @(
             Value : createdBy
         },
         {
-            $Type  : 'UI.DataFieldForAction',
-            Action : 'customerService.EntityContainer/createOrder',
-            Label  : 'Create Order'
+            $Type       : 'UI.DataField',
+            Label       : 'Status',
+            Value       : status,
+            Criticality : statusCriticality
         }
     ],
 
     UI.SelectionFields : [
         orderDate,
-        createdBy
+        createdBy,
+        status
     ],
 
     UI.PresentationVariant : {

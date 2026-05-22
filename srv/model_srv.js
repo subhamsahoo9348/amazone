@@ -71,7 +71,7 @@ module.exports = class adminService extends cds.ApplicationService {
           }),
         );
 
-        productWarehouses.forEach(async ({ product, nearestWarehouseId }) => {
+        for (const { product, nearestWarehouseId } of productWarehouses) {
           const shipmentId = cds.utils.uuid();
           await INSERT.into(getShipment).entries({
             ID: shipmentId,
@@ -86,7 +86,11 @@ module.exports = class adminService extends cds.ApplicationService {
             destinationAddress_longitude: customer.address_longitude,
           });
           await assignDelivery(shipmentId, nearestWarehouseId, product);
-        });
+        }
+
+        await UPDATE(adminGetOrder)
+          .set({ status: "Assigned" })
+          .where({ ID: results.ID });
       } catch (error) {
         debugger;
         console.error(error);

@@ -110,6 +110,17 @@ entity Order : cuid, managed {
     items     : Composition of many OrderItems
                     on items.order = $self;
     orderDate : Date;
+    status            : String(20) enum {
+        Open      = 'Open';
+        Assigned  = 'Assigned';
+        Delivered = 'Delivered';
+    } default 'Open';
+    statusCriticality : Integer = case status
+                                      when 'Open'      then 0
+                                      when 'Assigned'  then 3
+                                      when 'Delivered' then 3
+                                      else 0
+                                  end;
 }
 
 entity OrderItems : cuid {
