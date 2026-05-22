@@ -10,14 +10,16 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "watch-customer": "cds watch --open customer/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-customer": "cds watch --open customer/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-drivers": "cds watch --open drivers/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "workspaces": [
     "app/*"
   ],
   "sapux": [
-    "app/customer"
+    "app/customer",
+    "app/drivers"
   ],
   "cds": {
     "requires": {
@@ -34,6 +36,12 @@
             "password": "",
             "roles": [
               "customer"
+            ]
+          },
+          "driv": {
+            "password": "",
+            "roles": [
+              "driver"
             ]
           }
         }

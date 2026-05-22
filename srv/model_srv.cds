@@ -63,9 +63,27 @@ annotate customerService.getOrder with @odata.draft.enabled;
 
 //require   Drivers
 
-service driversService {
-    entity getWareHouse          as projection on DA.WareHouse;
+service driversService @(requires: 'driver') {
+
+    entity getWareHouse as projection on DA.WareHouse;
+
+    entity getShipment  as projection on DA.Shipment;
+
+    @restrict: [{
+        grant: 'READ',
+        where: 'driver.name = $user.id'
+    }]
     entity getDeliveryAssignment as projection on DA.DeliveryAssignment;
-    entity getVehicle            as projection on DA.Vehicle;
-    entity getDriver             as projection on DA.Driver;
+
+    @restrict: [{
+        grant: 'READ',
+        where: 'driver.name = $user.id'
+    }]
+    entity getVehicle as projection on DA.Vehicle;
+
+    @restrict: [{
+        grant: 'READ',
+        where: 'name = $user.id'
+    }]
+    entity getDriver as projection on DA.Driver;
 }

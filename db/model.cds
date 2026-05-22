@@ -97,11 +97,18 @@ entity Shipment : cuid, managed {
 }
 
 entity DeliveryAssignment : cuid {
-    shipment       : Association to Shipment;
-    driver         : Association to Driver;
-    vehicle        : Association to Vehicle;
-    assignedDate   : Date;
-    deliveryStatus : String(100);
+    shipment                  : Association to Shipment;
+    driver                    : Association to Driver;
+    vehicle                   : Association to Vehicle;
+    assignedDate              : Date;
+    deliveryStatus            : String(100);
+    deliveryStatusCriticality : Integer = case deliveryStatus
+                                              when 'Assigned'   then 2
+                                              when 'In Transit' then 2
+                                              when 'Delivered'  then 3
+                                              when 'Failed'     then 1
+                                              else 0
+                                          end;
 }
 
 
