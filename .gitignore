@@ -12,6 +12,12 @@ mta_archives/
 *_mta_build_tmp
 *.mtar
 
+# Build output
+dist/
+
+# Sub-app lockfiles
+app/*/package-lock.json
+
 # Other
 .DS_Store
 

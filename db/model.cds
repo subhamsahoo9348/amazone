@@ -67,8 +67,6 @@ entity Customer : cuid {
         latitude  : Decimal(9, 6);
         longitude : Decimal(9, 6);
     };
-    orders      : Association to many Order
-                      on orders.customer = $self;
 }
 
 entity Shipment : cuid, managed {
@@ -102,18 +100,11 @@ entity DeliveryAssignment : cuid {
     vehicle                   : Association to Vehicle;
     assignedDate              : Date;
     deliveryStatus            : String(100);
-    deliveryStatusCriticality : Integer = case deliveryStatus
-                                              when 'Assigned'   then 2
-                                              when 'In Transit' then 2
-                                              when 'Delivered'  then 3
-                                              when 'Failed'     then 1
-                                              else 0
-                                          end;
+    virtual deliveryStatusCriticality : Integer;
 }
 
 
 entity Order : cuid, managed {
-    customer  : Association to Customer;
     items     : Composition of many OrderItems
                     on items.order = $self;
     orderDate : Date;
@@ -122,12 +113,7 @@ entity Order : cuid, managed {
         Assigned  = 'Assigned';
         Delivered = 'Delivered';
     } default 'Open';
-    statusCriticality : Integer = case status
-                                      when 'Open'      then 0
-                                      when 'Assigned'  then 3
-                                      when 'Delivered' then 3
-                                      else 0
-                                  end;
+    virtual statusCriticality : Integer;
 }
 
 entity OrderItems : cuid {

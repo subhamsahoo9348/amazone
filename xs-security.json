@@ -1,0 +1,31 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.customer",
+      "description": "customer"
+    },
+    {
+      "name": "$XSAPPNAME.driver",
+      "description": "driver"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "customer",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.customer"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "driver",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.driver"
+      ],
+      "attribute-references": []
+    }
+  ]
+}

@@ -17,15 +17,15 @@ service adminService {
 }
 
 //require   Custmers
-service customerService @(requires: 'authenticated-user') {
+service customerService @(requires: 'customer') {
     @restrict: [
         {
             grant: 'READ',
-            to   : 'customer'
+            where: 'createdBy = $user.id'
         },
         {
             grant: 'WRITE',
-            to   : 'customer'
+            where: 'createdBy = $user.id'
         }
     ]
     entity getOrder      as projection on DA.Order;
@@ -35,10 +35,6 @@ service customerService @(requires: 'authenticated-user') {
     @restrict: [
         {
             grant: 'READ',
-            to   : 'customer'
-        },
-        {
-            grant: 'WRITE',
             to   : 'customer'
         }
     ]
@@ -65,9 +61,9 @@ annotate customerService.getOrder with @odata.draft.enabled;
 
 service driversService @(requires: 'driver') {
 
-    entity getWareHouse as projection on DA.WareHouse;
+    entity getWareHouse          as projection on DA.WareHouse;
 
-    entity getShipment  as projection on DA.Shipment;
+    entity getShipment           as projection on DA.Shipment;
 
     @restrict: [{
         grant: 'READ',
@@ -79,11 +75,11 @@ service driversService @(requires: 'driver') {
         grant: 'READ',
         where: 'driver.name = $user.id'
     }]
-    entity getVehicle as projection on DA.Vehicle;
+    entity getVehicle            as projection on DA.Vehicle;
 
     @restrict: [{
         grant: 'READ',
         where: 'name = $user.id'
     }]
-    entity getDriver as projection on DA.Driver;
+    entity getDriver             as projection on DA.Driver;
 }

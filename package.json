@@ -2,10 +2,13 @@
   "name": "delivery_management_system",
   "version": "1.0.0",
   "dependencies": {
-    "@sap/cds": "^9"
+    "@cap-js/hana": "^2",
+    "@sap/cds": "^9",
+    "@sap/xssec": "^4"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2",
+    "@sap/cds-dk": "^9",
     "cds-plugin-ui5": "^0.13.0"
   },
   "scripts": {
@@ -45,7 +48,16 @@
             ]
           }
         }
-      }
+      },
+      "[production]": {
+        "db": "hana",
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "destinations": true,
+      "html5-repo": true,
+      "workzone": true
     }
   }
 }

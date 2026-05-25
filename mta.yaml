@@ -1,0 +1,198 @@
+_schema-version: 3.3.0
+ID: delivery_management_system
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: delivery_management_system-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: delivery_management_system-auth
+      - name: delivery_management_system-db
+      - name: delivery_management_system-destination
+
+  - name: delivery_management_system-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: delivery_management_system-db
+  - name: delivery_management_system
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: delivery_management_system-auth
+      - name: delivery_management_system-html5-runtime
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+
+  - name: delivery_management_system-app-deployer
+    type: com.sap.application.content
+    path: gen
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: delivery_management_systemcustomer
+          artifacts:
+            - customer.zip
+          target-path: app/
+        - name: delivery_management_systemdrivers
+          artifacts:
+            - drivers.zip
+          target-path: app/
+    requires:
+      - name: delivery_management_system-auth
+      - name: srv-api
+      - name: delivery_management_system-html5-repo-host
+        parameters:
+          content-target: true
+          config:
+            HTML5Runtime_enabled: true
+    parameters:
+      config:
+        destinations:
+          - Name: srv-api
+            URL: ~{srv-api/srv-url}
+            Authentication: NoAuthentication
+            Type: HTTP
+            ProxyType: Internet
+            HTML5.ForwardAuthToken: true
+            HTML5.DynamicDestination: true
+
+  - name: delivery_management_systemcustomer
+    type: html5
+    path: app/customer
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+  - name: delivery_management_systemdrivers
+    type: html5
+    path: app/drivers
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+
+  - name: delivery_management_system-destinations
+    type: com.sap.application.content
+    requires:
+      - name: delivery_management_system-auth
+        parameters:
+          service-key:
+            name: delivery_management_system-auth-key
+      - name: delivery_management_system-html5-repo-host
+        parameters:
+          service-key:
+            name: delivery_management_system-html5-repo-host-key
+      - name: srv-api
+      - name: delivery_management_system-destination
+        parameters:
+          content-target: true
+    build-parameters:
+      no-source: true
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: delivery_management_system-html5-repository
+              ServiceInstanceName: delivery_management_system-html5-repo-host
+              ServiceKeyName: delivery_management_system-html5-repo-host-key
+              sap.cloud.service: delivery_management_system.service
+            - Name: delivery_management_system-auth
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: delivery_management_system-auth
+              ServiceKeyName: delivery_management_system-auth-key
+              sap.cloud.service: delivery_management_system.service
+
+resources:
+  - name: delivery_management_system-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: delivery_management_system-${org}-${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - "binding-secret"
+            - "x509"
+          redirect-uris:
+            - https://*~{app-api/app-uri}/**
+        role-collections:
+          - name: 'customer (delivery_management_system ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.customer'
+          - name: 'driver (delivery_management_system ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.driver'
+    requires:
+      - name: app-api
+  - name: delivery_management_system-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: delivery_management_system-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+    requires:
+      - name: srv-api
+
+  - name: delivery_management_system-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: delivery_management_system-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime

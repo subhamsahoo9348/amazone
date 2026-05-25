@@ -155,5 +155,9 @@
     "app": {
       "enableLazyLoading": true
     }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "delivery_management_system.service"
   }
 }
